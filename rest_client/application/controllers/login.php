@@ -6,90 +6,119 @@ class Login extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        //load library form validasi
         $this->load->library('form_validation');
-        //load model admin
         $this->load->model('M_login');
     }
 
-    public function index()
-    {
-
-            if($this->M_login->is_logged_in())
-            {
-                //jika memang session sudah terdaftar, maka redirect ke halaman dahsboard
-                //redirect("http://localhost/TABISMILLAH/rest_client/index.php/dosen");
-                if($this->session->userdata("role") == "admin"){
-                    redirect("dosen");
-                }else if ($this->session->userdata("role") == "mahasiswa"){
-                    redirect("lapmhs");
-                }else{
-                    redirect("lapdsn");
-                }
+    public function index(){
+        if($this->M_login->is_logged_in()){
+            //jika memang session sudah terdaftar, maka redirect ke halaman dahsboard
+            //redirect("http://localhost/TABISMILLAH/rest_client/index.php/dosen");
+            if($this->session->userdata("role") == "admin"){
+                redirect("dosen");
+            }else if ($this->session->userdata("role") == "mahasiswa"){
+                redirect("lapmhs");
+            }else{
+                redirect("lapdsn");
+            }
 
             }else{
 
-                //jika session belum terdaftar
+            //jika session belum terdaftar
 
-                //set form validation
-                $this->form_validation->set_rules('username', 'Username', 'required');
-                $this->form_validation->set_rules('password', 'Password', 'required');
+            //set form validation
+            $this->form_validation->set_rules('username', 'Username', 'required|trim');
+            $this->form_validation->set_rules('password', 'Password', 'required');
 
-                //set message form validation
-                $this->form_validation->set_message('required', '<div class="alert alert-danger" style="margin-top: 3px">
-                    <div class="header"><b><i class="fa fa-exclamation-circle"></i> {field}</b> harus diisi</div></div>');
+            //set message form validation
+            $this->form_validation->set_message('required', '<div class="alert alert-danger" style="margin-top: 3px">
+            <div class="header"><b><i class="fa fa-exclamation-circle"></i> {field}</b> harus diisi</div></div>');
 
-                //cek validasi
-                if ($this->form_validation->run() == TRUE) {
+            //cek validasi
+            if ($this->form_validation->run() == TRUE) {
 
-                //get data dari FORM
-                $username = $this->input->post("username", TRUE);
-                $password = $this->input->post('password', TRUE);
+            //get data dari FORM
+            $username = $this->input->post("username", TRUE);
+            $password = $this->input->post('password', TRUE);
 
-                //checking data via model
-                $checking = $this->m_login->check_login('users', array('username' => $username), array('pass' => $password));
+            //checking data via model
+            $checking = $this->m_login->check_login('users', array('username' => $username), array('pass' => $password));
                 
-                //var_dump($checking);
-                //die();
+            //var_dump($checking);
+            //die();
 
-                //jika ditemukan, maka create session
-                    if ($checking != FALSE) {
-                        foreach ($checking as $apps) {
+            //jika ditemukan, maka create session
+                if ($checking != FALSE) {
+                    foreach ($checking as $apps) {
+                        $session_data = array(
+                        'id_user'   => $apps->id_user,
+                        'username'  => $apps->username,
+                        'pass'      => $apps->pass,
+                        'nama'      => $apps->nama,
+                        'role'      => $apps->role
+                        );
+                        //set session userdata
+                        $this->session->set_userdata($session_data);
+                        //var_dump($session_data);
+                        //die();
 
-                            $session_data = array(
-                                'id_user'   => $apps->id_user,
-                                'username'  => $apps->username,
-                                'pass'      => $apps->pass,
-                                'nama'      => $apps->nama,
-                                'role'      => $apps->role
-                            );
-                            //set session userdata
-                            $this->session->set_userdata($session_data);
-                            //var_dump($session_data);
-                            //die();
-
-                            //redirect berdasarkan level user
-                            if($this->session->userdata("role") == "admin"){
-                                redirect("dosen");
-                            }else if ($this->session->userdata("role") == "mahasiswa"){
-                                redirect("lapmhs");
-                            }else{
-                                redirect("lapdsn");
-                            }
-                        }
+                        //redirect berdasarkan level user
+                        if($this->session->userdata("role") == "admin"){
+                            redirect("dosen");
+                        }else if ($this->session->userdata("role") == "mahasiswa"){
+                            redirect("lapmhs");
+                        }else{
+                            redirect("lapdsn");
+                        } 
+                    }        
                     }else{
-
                         $data['error'] = '<div class="alert alert-danger" style="margin-top: 3px">
-                            <div class="header"><b><i class="fa fa-exclamation-circle"></i> ERROR</b> username atau password salah!</div></div>';
+                        <div class="header"><b><i class="fa fa-exclamation-circle"></i> ERROR</b> username atau password salah!</div></div>';
                         $this->load->view('login', $data);
                     }
-
                 }else{
 
                     $this->load->view('login');
                 }
+            }
         }
+    function register(){
 
+        //set form validation
+        $this->form_validation->set_rules('nama', 'Nama', 'required|trim');
+        $this->form_validation->set_rules('username', 'Username', 'required|trim|is_unique[users.username]');
+        $this->form_validation->set_rules('password1', 'Password', 'required|trim|min_length[3]|matches[password2]',[
+            'matches' => 'Password tidak sama!',
+            'min_length' => 'Password terlalu pendek'
+        ]);
+        $this->form_validation->set_rules('password2', 'Password', 'required|trim|matches[password1]');
+
+        //set message form validation
+        $this->form_validation->set_message('required', '<div class="alert alert-danger" style="margin-top: 3px">
+        <div class="header"><b><i class="fa fa-exclamation-circle"></i>{field}</b> harus diisi</div></div>');
+        $this->form_validation->set_message('is_unique', '<div class="alert alert-danger" style="margin-top: 3px">
+        <div class="header"><b><i class="fa fa-exclamation-circle"></i>{field}</b> sudah digunakan !!</div></div>');
+        $this->form_validation->set_message('min_length', '<div class="alert alert-danger" style="margin-top: 3px">
+        <div class="header"><b><i class="fa fa-exclamation-circle"></i>{field}</b> kurang dari 3 digit !!</div></div>');
+        $this->form_validation->set_message('matches', '<div class="alert alert-danger" style="margin-top: 3px">
+        <div class="header"><b><i class="fa fa-exclamation-circle"></i>{field}</b> tidak sama !!</div></div>');
+
+        if ($this->form_validation->run() == false) {
+            $this->load->view('register');
+        }else {
+            $data = [
+                'nama'     => htmlspecialchars($this->input->post('nama', true)),
+                'username' => htmlspecialchars($this->input->post('username')),
+                'pass' => htmlspecialchars($this->input->post('password1')),
+                'role'     => 'dosen'
+            ];
+
+            $this->db->insert('users', $data);
+            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
+            Registrasi berhasil! Silahkan Login.
+          </div>');
+            redirect('login');
+        }
     }
     
     function logout(){

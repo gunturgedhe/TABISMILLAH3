@@ -1,7 +1,7 @@
 <html>
 <head>
     <link rel="shortcut icon" href="<?php echo base_url(); ?>assets/img/logoo.jpg">
-    <title>Halaman Login</title>
+    <title>Halaman Register</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
         .form-signin
@@ -89,33 +89,41 @@
         .new-account
         {
             display: block;
-            /* margin-top: 10px; */
+            margin-top: 10px;
         }
     </style>
 </head>
 <body style="background-image:url(http://pmw.etupolinema.org/assets/img/bg5.png)">
-<div class="container" style="margin-top: 50px">
+<div class="container" style="margin-top: 30px">
     <div class="row">
         <div class="col-sm-6 col-md-4 col-md-offset-4">
-            <div class="col-lg">
-            <h1 class="text-center login-title">Masuk Administrator</h1>
+            <h1 class="text-center login-title">Register Dosen</h1>
             <?php if(isset($error)) { echo $error; }; ?>
             <div class="account-wall">
-                <img class="profile-img" src="<?php echo base_url(); ?>assets/img/logoo.jpg"alt="">   
-                <?=  $this->session->flashdata('message'); ?>
-                <form class="form-signin" method="POST" action="<?php echo base_url() ?>index.php/login">
-                <div class="form-group">
-                    <input type="text" class="form-control" name="username" placeholder="Masukkan Username Anda" autofocus>
-                    <?php echo form_error('username'); ?>
+                <img class="profile-img" src="<?php echo base_url(); ?>assets/img/logoo.jpg" alt="Logo ETU">    
+                <form class="form-signin" method="POST" action="<?php echo base_url() ?>index.php/login/register">
+                <div class="form-group ">
+                    <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama Anda" 
+                    value="<?= set_value('nama');?>">
+                    <?php echo form_error('nama'); ?>
                 </div>
-                <div class="form-group">
-                    <input type="password" name="password" class="form-control" placeholder="Masukkan Password Anda">
-                    <?php echo form_error('pass'); ?>
+                <div class="form-group" >
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Username">
+                    <?php echo form_error('username', '<small class="text-danger pl-3">', '</small>'); ?>
                 </div>
-
-                <button class="btn btn-lg btn-primary btn-block" value="Login" name="btn-login" id="btn-login" type="submit">
-                    Masuk</button>
-
+                <div class="form-group row">
+                    <div class="col-sm-5 mb-3 mb-sm-0">
+                    <input type="password" id="password1" name="password1" class="form-control" placeholder="Password"
+                    value="<?= set_value('password1');?>">
+                    <?php echo form_error('password1', '<small class="text-danger pl-3">', '</small>'); ?>
+                    </div>
+                    <div class="col-sm-7">
+                    <input type="password" id="password2" name="password2" class="form-control" placeholder="Ulangi Password"
+                    value="<?= set_value('password2');?>">
+                    </div>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" value="register" name="btn-regist" id="btn-regist" type="submit">
+                    Register</button>
                 <label class="checkbox pull-left">
                     <input type="checkbox" value="remember-me">
                     Ingatkan Saya
@@ -126,11 +134,8 @@
                 </div>
                 </form>
             </div>
-            <div class="text-center" id="error" style="margin-top: 10px">
-                Dosen silahkan register terlebih dahulu 
-                <a href="login/register" class="text-center new-account">KLIK Disini!!</a>
-            </div>
-            </div>
+            <a href="<?= base_url('index.php/login') ?>" class="text-center new-account">Sudah Memiliki Akun? Login </a>
+            <div id="error" style="margin-top: 10px"></div>
         </div>
     </div>
 </div>

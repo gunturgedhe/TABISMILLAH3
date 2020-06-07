@@ -4,12 +4,14 @@ Class dosen extends CI_Controller{
 
     function __construct() {
         parent::__construct();
+        $this->load->database();
         $this->API  ="http://localhost/TABISMILLAH3/rest_server/index.php";
     }
 
     // menampilkan data mahasiswa
     function index(){
-        $data['dosen'] = json_decode($this->curl->simple_get($this->API.'/dosen'));
+        //$data['dosen'] = json_decode($this->curl->simple_get($this->API.'/dosen'));
+        $data = $this->db->get('dosen');
         $this->load->view('list',$data);
     }
 
