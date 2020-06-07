@@ -10,8 +10,8 @@ Class dosen extends CI_Controller{
 
     // menampilkan data mahasiswa
     function index(){
-        //$data['dosen'] = json_decode($this->curl->simple_get($this->API.'/dosen'));
-        $data = $this->db->get('dosen');
+        $data['dosen'] = json_decode($this->curl->simple_get($this->API.'/dosen'));
+        // $data = $this->db->get('dosen');
         $this->load->view('list',$data);
     }
 

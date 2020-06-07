@@ -56,7 +56,6 @@
                             <th>NIM</th>
                             <th>Nama</th>
                             <th>No. HP</th>
-                            <th>Username</th>
                             <th>Password</th>
                             <th>Jurusan</th>
                             <th>Program Studi</th>
@@ -71,7 +70,6 @@
                           <td>$m->nim</td>
                           <td>$m->nama</td>
                           <td>$m->no_hp</td>
-                          <td>$m->username</td>
                           <td>$m->password</td>
                           <td>$m->jurusan</td>
                           <td>$m->prodi</td>                                
